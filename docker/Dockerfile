@@ -114,10 +114,9 @@ RUN echo "=== Build-Artefakte im frontend-Stage ===" && \
 
 FROM webdevops/php-nginx:8.4-alpine
 # Docker-CLI (ohne Daemon): Host-Socket mounten, damit die App Game-Container starten kann.
-# Wichtig für Production (Portainer / Compose): PHP läuft als UID 1000 — der Socket ist oft root:docker (660).
-# Dann im Service ergänzen:
-#   volumes: [ "/var/run/docker.sock:/var/run/docker.sock" ]
-#   group_add: [ "<GID>" ]   # GID der Gruppe "docker" AUF DEM HOST, z. B. stat -c '%g' /var/run/docker.sock
+# Production: Socket mounten. `group_add` im Compose allein reicht für PHP-FPM oft nicht — siehe
+# provision/entrypoint.d/05-docker-socket-group.sh (User uid 1000 → Gruppe mit Socket-GID).
+# Zusätzlich erlaubt: group_add: [ "<GID>" ] (stat -c '%g' /var/run/docker.sock auf dem Host).
 COPY --from=docker:28-cli /usr/local/bin/docker /usr/local/bin/docker
 ENV WEB_DOCUMENT_ROOT=/app/public
 ENV PHP_DISMOD=bz2,calendar,ffi,gettext,sysvmsg,sysvsm,sysvshm,shmop,xsl,apcu,vips,yaml,mongodb,amqp
