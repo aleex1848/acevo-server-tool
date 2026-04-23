@@ -1,0 +1,33 @@
+name: Docker Publish & Portainer Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      PORTAINER_STACK_WEBHOOK_URL: ${{ secrets.PORTAINER_STACK_WEBHOOK_URL }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Build and push production image
+        env:
+          REVERB_HOST: ${{ secrets.REVERB_HOST }}
+        run: bash docker/build.sh --prod
+
+      - name: Trigger Portainer stack webhook
+        if: env.PORTAINER_STACK_WEBHOOK_URL != ''
+        run: curl -fsS -X POST "$PORTAINER_STACK_WEBHOOK_URL"
