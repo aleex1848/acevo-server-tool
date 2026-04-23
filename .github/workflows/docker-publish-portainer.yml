@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Login: Benutzer muss zum Image-Namespace passen (repository_owner), nicht zwingend github.actor.
       # Optional: Secret GHCR_WRITE_TOKEN (Classic PAT: write:packages, read:packages) — wenn gesetzt,
