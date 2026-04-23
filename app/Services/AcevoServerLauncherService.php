@@ -68,13 +68,14 @@ final class AcevoServerLauncherService
 
             return $server->refresh();
         } catch (Throwable $e) {
+            $toThrow = $this->wrapDockerSocketPermissionHint($e);
             $server->update([
                 'status' => ServerStatus::Failed,
-                'last_error' => $e->getMessage(),
+                'last_error' => $toThrow->getMessage(),
                 'stopped_at' => Carbon::now(),
             ]);
 
-            throw $e;
+            throw $toThrow;
         }
     }
 
@@ -100,7 +101,7 @@ final class AcevoServerLauncherService
         $server->update([
             'status' => ServerStatus::Stopped,
             'stopped_at' => Carbon::now(),
-            'last_error' => $process->isSuccessful() ? null : trim($process->getErrorOutput()),
+            'last_error' => $process->isSuccessful() ? null : mb_trim($process->getErrorOutput()),
         ]);
 
         return $server->refresh();
@@ -133,7 +134,7 @@ final class AcevoServerLauncherService
             return $server->refresh();
         }
 
-        $dockerStatus = trim($process->getOutput());
+        $dockerStatus = mb_trim($process->getOutput());
 
         $status = match ($dockerStatus) {
             'running', 'restarting' => ServerStatus::Running,
@@ -208,5 +209,24 @@ final class AcevoServerLauncherService
         file_put_contents($path, implode("\n", $lines)."\n");
 
         return $path;
+    }
+
+    private function wrapDockerSocketPermissionHint(Throwable $e): Throwable
+    {
+        $message = $e->getMessage();
+        if (
+            str_contains($message, 'permission denied')
+            && str_contains($message, 'docker.sock')
+        ) {
+            return new RuntimeException(
+                $message.' — Docker-Socket nicht beschreibbar für den PHP-User. '
+                .'Im Stack: Volume `/var/run/docker.sock` mounten und `group_add` mit der numerischen GID '
+                .'der Host-Gruppe `docker` setzen (auf dem Host: `stat -c \'%g\' /var/run/docker.sock`).',
+                0,
+                $e
+            );
+        }
+
+        return $e;
     }
 }

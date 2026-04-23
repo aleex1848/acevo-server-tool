@@ -113,7 +113,11 @@ RUN echo "=== Build-Artefakte im frontend-Stage ===" && \
     test -f /app/public/build/manifest.json && echo "✓ manifest.json gefunden" || echo "✗ manifest.json fehlt!"
 
 FROM webdevops/php-nginx:8.4-alpine
-# Static docker CLI only (no daemon). Mount host /var/run/docker.sock so the app can run acevo containers.
+# Docker-CLI (ohne Daemon): Host-Socket mounten, damit die App Game-Container starten kann.
+# Wichtig für Production (Portainer / Compose): PHP läuft als UID 1000 — der Socket ist oft root:docker (660).
+# Dann im Service ergänzen:
+#   volumes: [ "/var/run/docker.sock:/var/run/docker.sock" ]
+#   group_add: [ "<GID>" ]   # GID der Gruppe "docker" AUF DEM HOST, z. B. stat -c '%g' /var/run/docker.sock
 COPY --from=docker:28-cli /usr/local/bin/docker /usr/local/bin/docker
 ENV WEB_DOCUMENT_ROOT=/app/public
 ENV PHP_DISMOD=bz2,calendar,ffi,gettext,sysvmsg,sysvsm,sysvshm,shmop,xsl,apcu,vips,yaml,mongodb,amqp
