@@ -6,7 +6,7 @@ namespace App\Support;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use RuntimeException;
 
 final class CarRepository
@@ -18,16 +18,17 @@ final class CarRepository
      */
     public function all(): Collection
     {
-        $disk = Storage::disk('local');
-        $mtime = $disk->lastModified(self::PATH);
+        $file = resource_path('acevo/'.self::PATH);
+
+        if (! File::isFile($file)) {
+            throw new RuntimeException('Acevo data file missing: '.self::PATH);
+        }
+
+        $mtime = File::lastModified($file);
 
         /** @var Collection<int, array{name: string, display_name: string, performance_indicator: float, property_1: int, property_2: int, property_3: int}> $cars */
-        $cars = Cache::remember('cars:'.$mtime, now()->addDay(), function () use ($disk): Collection {
-            $contents = $disk->get(self::PATH);
-
-            if ($contents === null) {
-                throw new RuntimeException('Unable to read '.self::PATH);
-            }
+        $cars = Cache::remember('cars:'.$mtime, now()->addDay(), function () use ($file): Collection {
+            $contents = File::get($file);
 
             /** @var array{cars: array<int, array{name: string, display_name: string, performance_indicator: float, property_1: int, property_2: int, property_3: int}>} $decoded */
             $decoded = json_decode($contents, true, flags: JSON_THROW_ON_ERROR);

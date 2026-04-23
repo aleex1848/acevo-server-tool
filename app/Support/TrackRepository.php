@@ -7,7 +7,7 @@ namespace App\Support;
 use App\Enums\EventType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use RuntimeException;
 
 final class TrackRepository
@@ -22,20 +22,20 @@ final class TrackRepository
             EventType::RaceWeekend => 'events_race_weekend.json',
         };
 
-        $disk = Storage::disk('local');
+        $file = resource_path('acevo/'.$path);
 
-        $mtime = $disk->lastModified($path);
+        if (! File::isFile($file)) {
+            throw new RuntimeException("Acevo data file missing: {$path}");
+        }
+
+        $mtime = File::lastModified($file);
 
         /** @var Collection<int, array{track: string, layout: string, event_name: string, track_length: int, max_pit_slot: int, key: string, label: string}> $events */
         $events = Cache::remember(
             'tracks:'.$type->value.':'.$mtime,
             now()->addDay(),
-            function () use ($disk, $path): Collection {
-                $contents = $disk->get($path);
-
-                if ($contents === null) {
-                    throw new RuntimeException("Unable to read {$path}");
-                }
+            function () use ($file): Collection {
+                $contents = File::get($file);
 
                 /** @var array{events: array<int, array{track: string, layout: string, event_name: string, track_length: int, max_pit_slot: int}>} $decoded */
                 $decoded = json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
