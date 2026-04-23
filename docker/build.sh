@@ -71,6 +71,14 @@ echo "Build-Context: $(pwd)"
 echo "Dockerfile: docker/Dockerfile"
 echo ""
 
+# GHCR: GITHUB_TOKEN darf nur in den Namespace des Repo-Besitzers pushen.
+# In CI z. B. GHCR_IMAGE_BASE=ghcr.io/${{ github.repository_owner }}/acevo-server-tool setzen.
+DEFAULT_IMAGE_BASE="ghcr.io/aleex1848/acevo-server-tool"
+IMAGE_BASE="${GHCR_IMAGE_BASE:-$DEFAULT_IMAGE_BASE}"
+IMAGE_BASE=$(echo "$IMAGE_BASE" | tr '[:upper:]' '[:lower:]')
+echo "Image-Basis: $IMAGE_BASE"
+echo ""
+
 # Funktion zum Erstellen eines Builds
 build_image() {
     local install_dev_deps=$1
@@ -104,11 +112,11 @@ push_image() {
 
 # Erstelle Builds basierend auf BUILD_TYPE
 if [ "$BUILD_TYPE" = "dev" ] || [ "$BUILD_TYPE" = "both" ]; then
-    build_image "true" "ghcr.io/aleex1848/acevo-server-tool:dev" "Development"
+    build_image "true" "${IMAGE_BASE}:dev" "Development"
 fi
 
 if [ "$BUILD_TYPE" = "prod" ] || [ "$BUILD_TYPE" = "both" ]; then
-    build_image "false" "ghcr.io/aleex1848/acevo-server-tool:latest" "Production"
+    build_image "false" "${IMAGE_BASE}:latest" "Production"
 fi
 
 echo "=== Starte Push ==="
@@ -116,11 +124,11 @@ echo ""
 
 # Pushe Images basierend auf BUILD_TYPE
 if [ "$BUILD_TYPE" = "dev" ] || [ "$BUILD_TYPE" = "both" ]; then
-    push_image "ghcr.io/aleex1848/acevo-server-tool:dev"
+    push_image "${IMAGE_BASE}:dev"
 fi
 
 if [ "$BUILD_TYPE" = "prod" ] || [ "$BUILD_TYPE" = "both" ]; then
-    push_image "ghcr.io/aleex1848/acevo-server-tool:latest"
+    push_image "${IMAGE_BASE}:latest"
 fi
 
 echo "=== Fertig ==="

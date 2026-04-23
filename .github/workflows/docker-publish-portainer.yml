@@ -20,12 +20,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Login: Benutzer muss zum Image-Namespace passen (repository_owner), nicht zwingend github.actor.
+      # Optional: Secret GHCR_WRITE_TOKEN (Classic PAT: write:packages, read:packages) — wenn gesetzt,
+      # wird es statt GITHUB_TOKEN verwendet (hilft z. B. bei bestehendem Package / Policies).
       - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+        env:
+          CI_GHCR_PAT: ${{ secrets.GHCR_WRITE_TOKEN }}
+          CI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          user='${{ github.repository_owner }}'
+          if [ -n "${CI_GHCR_PAT}" ]; then
+            echo "${CI_GHCR_PAT}" | docker login ghcr.io -u "${user}" --password-stdin
+          else
+            echo "${CI_GITHUB_TOKEN}" | docker login ghcr.io -u "${user}" --password-stdin
+          fi
 
       - name: Build and push production image
         env:
           REVERB_HOST: ${{ secrets.REVERB_HOST }}
+          # GITHUB_TOKEN darf nur Packages unter diesem Besitzer schreiben (nicht fest aleex1848).
+          GHCR_IMAGE_BASE: ghcr.io/${{ github.repository_owner }}/acevo-server-tool
         run: bash docker/build.sh --prod
 
       - name: Trigger Portainer stack webhook
