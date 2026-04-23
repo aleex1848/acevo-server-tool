@@ -32,7 +32,7 @@ final class CarRepository
             /** @var array{cars: array<int, array{name: string, display_name: string, performance_indicator: float, property_1: int, property_2: int, property_3: int}>} $decoded */
             $decoded = json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
 
-            return collect($decoded['cars'] ?? [])->values();
+            return collect($decoded['cars'])->values();
         });
 
         return $cars;

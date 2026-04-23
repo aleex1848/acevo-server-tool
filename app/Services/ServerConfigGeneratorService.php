@@ -26,9 +26,9 @@ final class ServerConfigGeneratorService
 
         foreach ($configuration->cars ?? [] as $car) {
             $cars[] = [
-                'car_name' => (string) ($car['car_name'] ?? ''),
-                'ballast' => (int) ($car['ballast'] ?? 0),
-                'restrictor' => (float) ($car['restrictor'] ?? 0.0),
+                'car_name' => $car['car_name'],
+                'ballast' => $car['ballast'],
+                'restrictor' => $car['restrictor'],
             ];
         }
 
@@ -106,7 +106,7 @@ final class ServerConfigGeneratorService
         $warmup = $sessions['warmup'] ?? [];
         $race = $sessions['race'] ?? [];
 
-        $raceDurationType = isset($race['duration_type']) && $race['duration_type'] !== null
+        $raceDurationType = isset($race['duration_type'])
             ? RaceDurationType::from((string) $race['duration_type'])
             : RaceDurationType::Time;
 

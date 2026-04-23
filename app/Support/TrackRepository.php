@@ -40,7 +40,7 @@ final class TrackRepository
                 /** @var array{events: array<int, array{track: string, layout: string, event_name: string, track_length: int, max_pit_slot: int}>} $decoded */
                 $decoded = json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
 
-                return collect($decoded['events'] ?? [])->map(function (array $event): array {
+                return collect($decoded['events'])->map(function (array $event): array {
                     $key = $event['track'].'|'.$event['layout'];
                     $km = number_format($event['track_length'] / 1000, 2, ',', '');
 
