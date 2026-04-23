@@ -1,0 +1,20 @@
+{
+    "agents": [
+        "cursor"
+    ],
+    "guidelines": true,
+    "mcp": true,
+    "nightwatch_mcp": false,
+    "packages": [
+        "filament/filament",
+        "fruitcake/laravel-debugbar"
+    ],
+    "sail": false,
+    "skills": [
+        "laravel-best-practices",
+        "configuring-horizon",
+        "pest-testing",
+        "tailwindcss-development",
+        "debug-using-debugbar"
+    ]
+}
