@@ -104,8 +104,8 @@ final class ServerConfigurationFactory extends Factory
                     'time_multiplier' => 2,
                     'max_wait_to_box' => 10,
                     'overtime_wait_next_session' => 10,
-                    'min_waiting_players' => 1,
-                    'max_waiting_players' => 30,
+                    'min_waiting_for_players' => 10,
+                    'max_waiting_for_players' => 30,
                 ],
             ],
         ]);

@@ -129,9 +129,10 @@ final class ServerConfigGeneratorService
             'race_duration' => (int) ($race['duration'] ?? 0),
             'race_duration_type' => $raceDurationType->apiValue(),
             'race_time_of_day' => $this->timeOfDay($race),
+            'race_overtime_waiting_next_session' => (int) ($race['overtime_wait_next_session'] ?? 0),
             'race_max_wait_to_box' => (int) ($race['max_wait_to_box'] ?? 0),
-            'race_min_waiting_players' => (int) ($race['min_waiting_players'] ?? 0),
-            'race_max_waiting_players' => (int) ($race['max_waiting_players'] ?? 0),
+            'min_waiting_for_players' => (int) ($race['min_waiting_for_players'] ?? $race['min_waiting_players'] ?? 10),
+            'max_waiting_for_players' => (int) ($race['max_waiting_for_players'] ?? $race['max_waiting_players'] ?? 30),
         ];
     }
 

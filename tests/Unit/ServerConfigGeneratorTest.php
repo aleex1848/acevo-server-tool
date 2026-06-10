@@ -113,14 +113,19 @@ it('builds a race weekend season definition', function (): void {
         'race_duration',
         'race_duration_type',
         'race_time_of_day',
-        'race_min_waiting_players',
-        'race_max_waiting_players',
+        'race_overtime_waiting_next_session',
+        'min_waiting_for_players',
+        'max_waiting_for_players',
     ]);
 
     expect($result['game_config']['qualify_duration'])->toBe(420);
     expect($result['game_config']['race_duration'])->toBe(600);
     expect($result['game_config']['race_duration_type'])->toBe('GameModeSelectionDuration_TIME');
     expect($result['game_config']['race_time_of_day']['hour'])->toBe(14);
+    expect($result['game_config']['min_waiting_for_players'])->toBe(10);
+    expect($result['game_config']['max_waiting_for_players'])->toBe(30);
+    expect($result['game_config'])->not->toHaveKey('race_min_waiting_players');
+    expect($result['game_config'])->not->toHaveKey('race_max_waiting_players');
 });
 
 it('maps dynamic weather behaviour to the API value', function (): void {

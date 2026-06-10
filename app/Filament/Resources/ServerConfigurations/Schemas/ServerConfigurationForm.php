@@ -381,14 +381,14 @@ final class ServerConfigurationForm
                         ->required(),
                 ]),
                 Grid::make(2)->schema([
-                    TextInput::make('sessions.race.min_waiting_players')
-                        ->label('Min waiting players')
+                    TextInput::make('sessions.race.min_waiting_for_players')
+                        ->label('Min waiting for players')
                         ->numeric()
                         ->minValue(0)
-                        ->default(1)
+                        ->default(10)
                         ->required(),
-                    TextInput::make('sessions.race.max_waiting_players')
-                        ->label('Max waiting players')
+                    TextInput::make('sessions.race.max_waiting_for_players')
+                        ->label('Max waiting for players')
                         ->numeric()
                         ->minValue(0)
                         ->default(30)
