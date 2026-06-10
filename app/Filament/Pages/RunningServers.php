@@ -108,7 +108,7 @@ final class RunningServers extends Page implements HasTable
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Close')
                     ->visible(fn (Server $record): bool => $record->container_id !== null)
-                    ->modalContent(fn (Server $record) => view(
+                    ->modalContent(fn (Server $record): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => view(
                         'filament.pages.partials.server-logs',
                         ['logs' => app(AcevoServerLauncherService::class)->logs($record)],
                     )),

@@ -59,7 +59,7 @@ final class ServerConfigurationInfolist
                             ->state(function (ServerConfiguration $record): string {
                                 $keys = array_keys($record->sessions ?? []);
 
-                                return $keys === [] ? '-' : implode(', ', array_map('ucfirst', $keys));
+                                return $keys === [] ? '-' : implode(', ', array_map(ucfirst(...), $keys));
                             }),
                     ]),
             ]),

@@ -122,3 +122,13 @@ it('builds a race weekend season definition', function (): void {
     expect($result['game_config']['race_duration_type'])->toBe('GameModeSelectionDuration_TIME');
     expect($result['game_config']['race_time_of_day']['hour'])->toBe(14);
 });
+
+it('maps dynamic weather behaviour to the API value', function (): void {
+    $config = ServerConfiguration::factory()->make([
+        'weather_behaviour' => 'Dynamic',
+    ]);
+
+    $result = app(ServerConfigGeneratorService::class)->buildSeasonDefinition($config);
+
+    expect($result['weather_behaviour'])->toBe('GameModeSelectionWeatherBehaviour_DYNAMIC');
+});

@@ -20,7 +20,7 @@ final class Setting extends Model
     /** @use HasFactory<SettingFactory> */
     use HasFactory;
 
-    private const CACHE_PREFIX = 'settings:';
+    private const string CACHE_PREFIX = 'settings:';
 
     protected $guarded = [];
 

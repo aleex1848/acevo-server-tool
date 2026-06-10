@@ -8,25 +8,25 @@ use App\Models\Setting;
 
 final class AcevoSettingsService
 {
-    public const KEY_DOCKER_IMAGE = 'acevo.docker_image';
+    public const string KEY_DOCKER_IMAGE = 'acevo.docker_image';
 
-    public const KEY_PORT_GAME_START = 'acevo.port_game_start';
+    public const string KEY_PORT_GAME_START = 'acevo.port_game_start';
 
-    public const KEY_PORT_GAME_END = 'acevo.port_game_end';
+    public const string KEY_PORT_GAME_END = 'acevo.port_game_end';
 
-    public const KEY_PORT_HTTP_START = 'acevo.port_http_start';
+    public const string KEY_PORT_HTTP_START = 'acevo.port_http_start';
 
-    public const KEY_PORT_HTTP_END = 'acevo.port_http_end';
+    public const string KEY_PORT_HTTP_END = 'acevo.port_http_end';
 
-    public const DEFAULT_DOCKER_IMAGE = 'aleex1848/acevo-server:latest';
+    public const string DEFAULT_DOCKER_IMAGE = 'aleex1848/acevo-server:latest';
 
-    public const DEFAULT_GAME_PORT_START = 9700;
+    public const int DEFAULT_GAME_PORT_START = 9700;
 
-    public const DEFAULT_GAME_PORT_END = 9720;
+    public const int DEFAULT_GAME_PORT_END = 9720;
 
-    public const DEFAULT_HTTP_PORT_START = 8080;
+    public const int DEFAULT_HTTP_PORT_START = 8080;
 
-    public const DEFAULT_HTTP_PORT_END = 9000;
+    public const int DEFAULT_HTTP_PORT_END = 9000;
 
     public function dockerImage(): string
     {

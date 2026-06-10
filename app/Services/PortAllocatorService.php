@@ -6,10 +6,10 @@ namespace App\Services;
 
 use App\Models\ServerConfiguration;
 
-final class PortAllocatorService
+final readonly class PortAllocatorService
 {
     public function __construct(
-        private readonly AcevoSettingsService $settings,
+        private AcevoSettingsService $settings,
     ) {}
 
     /**
@@ -77,7 +77,7 @@ final class PortAllocatorService
             ->pluck('udp_port')
             ->all();
 
-        return array_values(array_unique([...array_map('intval', $tcp), ...array_map('intval', $udp)]));
+        return array_values(array_unique([...array_map(intval(...), $tcp), ...array_map(intval(...), $udp)]));
     }
 
     /**
@@ -91,7 +91,7 @@ final class PortAllocatorService
             $query->whereKeyNot($excludeConfigurationId);
         }
 
-        return array_values(array_unique(array_map('intval', $query->pluck('external_http_port')->all())));
+        return array_values(array_unique(array_map(intval(...), $query->pluck('external_http_port')->all())));
     }
 
     /**

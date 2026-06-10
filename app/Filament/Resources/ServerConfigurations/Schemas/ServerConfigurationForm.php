@@ -149,13 +149,8 @@ final class ServerConfigurationForm
                         ->default(InitialGrip::Green->value)
                         ->required(),
                     Select::make('weather_behaviour')
-                        ->label('Weather Behavior')
+                        ->label('Weather Behaviour')
                         ->options(WeatherBehaviour::options())
-                        ->disableOptionWhen(fn (string $value): bool => in_array(
-                            $value,
-                            WeatherBehaviour::disabledValues(),
-                            true,
-                        ))
                         ->default(WeatherBehaviour::Static->value)
                         ->required(),
                 ]),

@@ -75,6 +75,39 @@ it('can create a practice configuration', function (): void {
         'type' => EventType::Practice->value,
         'track' => 'Nurburgring',
         'layout' => 'Touristenfahrten',
+        'weather_behaviour' => 'Static',
+    ]);
+});
+
+it('can create a configuration with dynamic weather behaviour', function (): void {
+    livewire(CreateServerConfiguration::class)
+        ->fillForm([
+            'name' => 'Dynamic Weather Test',
+            'server_name' => 'Dynamic GT',
+            'tcp_port' => 9701,
+            'udp_port' => 9701,
+            'http_port' => 8080,
+            'max_players' => 16,
+            'cycle' => true,
+            'type' => EventType::Practice->value,
+            'track_key' => 'Nurburgring|Touristenfahrten',
+            'initial_grip' => 'Green',
+            'weather_behaviour' => 'Dynamic',
+            'weather_type' => 'Clear',
+            'sessions.practice.duration' => 300,
+            'sessions.practice.hour' => 16,
+            'sessions.practice.minute' => 0,
+            'sessions.practice.time_multiplier' => 1,
+            'sessions.practice.max_wait_to_box' => 10,
+            'sessions.practice.overtime_wait_next_session' => 10,
+        ])
+        ->call('create')
+        ->assertNotified()
+        ->assertHasNoFormErrors();
+
+    assertDatabaseHas(ServerConfiguration::class, [
+        'name' => 'Dynamic Weather Test',
+        'weather_behaviour' => 'Dynamic',
     ]);
 });
 

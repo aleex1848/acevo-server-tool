@@ -14,12 +14,12 @@ use Spatie\Docker\DockerContainer;
 use Symfony\Component\Process\Process;
 use Throwable;
 
-final class AcevoServerLauncherService
+final readonly class AcevoServerLauncherService
 {
     public function __construct(
-        private readonly AcevoSettingsService $settings,
-        private readonly ServerConfigPackerService $packer,
-        private readonly ServerConfigGeneratorService $generator,
+        private AcevoSettingsService $settings,
+        private ServerConfigPackerService $packer,
+        private ServerConfigGeneratorService $generator,
     ) {}
 
     public function launch(ServerConfiguration $configuration): Server

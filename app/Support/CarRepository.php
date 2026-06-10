@@ -11,7 +11,7 @@ use RuntimeException;
 
 final class CarRepository
 {
-    private const PATH = 'cars.json';
+    private const string PATH = 'cars.json';
 
     /**
      * @return Collection<int, array{name: string, display_name: string, performance_indicator: float, property_1: int, property_2: int, property_3: int}>

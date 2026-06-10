@@ -11,11 +11,11 @@ use App\Models\ServerConfiguration;
 final class ServerConfigGeneratorService
 {
     /** Constant date matching the launcher examples. */
-    public const DEFAULT_YEAR = 2024;
+    public const int DEFAULT_YEAR = 2024;
 
-    public const DEFAULT_MONTH = 8;
+    public const int DEFAULT_MONTH = 8;
 
-    public const DEFAULT_DAY = 15;
+    public const int DEFAULT_DAY = 15;
 
     /**
      * @return array<string, mixed>
