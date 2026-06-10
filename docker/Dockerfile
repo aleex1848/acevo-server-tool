@@ -144,4 +144,16 @@ COPY --chown=1000:1000 docker/php-nginx-app/ .
 COPY --chown=1000:1000 docker/php-nginx-cron/ .
 COPY --chown=1000:1000 docker/php-nginx-queue/ .
 COPY --chown=1000:1000 docker/php-nginx-websockets/ .
+
+######## Cursor dev container fixes (Alpine/BusyBox vs GNU) #########
+### base64: https://forum.cursor.com/t/cursor-server-stopped-working-because-of-base64-option-d/159260/8?u=aleex1848 ###
+### flock: Cursor install script uses flock -w; BusyBox flock has no -w (apk package util-linux flock) ###
+RUN apk add --no-cache bash libstdc++ wget coreutils flock \
+ && mkdir -p /usr/local/libexec/cursor-bin \
+ && ln -sf "$(readlink -f /bin/base64)" /usr/local/libexec/cursor-bin/base64 \
+ && printf '#!/bin/sh\nif [ "$1" = "-D" ]; then shift; exec /usr/local/libexec/cursor-bin/base64 -d "$@"; fi\nexec /usr/local/libexec/cursor-bin/base64 "$@"\n' > /usr/local/bin/base64 \
+ && chmod +x /usr/local/bin/base64 \
+ && ln -sf /usr/local/bin/base64 /usr/bin/base64 \
+ && ln -sf /usr/local/bin/base64 /bin/base64
+ 
 WORKDIR /app
